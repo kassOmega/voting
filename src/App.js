@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+import { useState } from "react";
+import { NomineesList, ResultsDisplay, VoterForm } from "./components";
+const nominees = [
+  /* Array of 12 nominee objects */
+];
+const initialVotes = {}; // Initialize votes object
 function App() {
+  const [votes, setVotes] = useState(initialVotes);
+
+  // Handle vote submission
+  const handleVoteSubmit = (voterId, votedNominees, totalShareLots) => {
+    // Calculate updated votes based on totalShareLots
+    const updatedVotes = { ...votes };
+    votedNominees.forEach((nomineeId) => {
+      updatedVotes[nomineeId] = (updatedVotes[nomineeId] || 0) + totalShareLots;
+    });
+    setVotes(updatedVotes);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <NomineesList nominees={nominees} onVoteSubmit={handleVoteSubmit} />
+      <VoterForm onVoteSubmit={handleVoteSubmit} />
+      <ResultsDisplay votes={votes} />
     </div>
   );
 }
