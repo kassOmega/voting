@@ -1,16 +1,14 @@
 import React from "react";
+import { useGetNominee } from "../api";
 
-export const NomineesList = ({ nominees, onVoteSubmit }) => {
+export const NomineesList = () => {
+  const nominees = useGetNominee();
   return (
     <ul>
-      {nominees.map((nominee) => (
+      {nominees?.data?.map((nominee: any) => (
         <li key={nominee.id}>
-          {nominee.name}
-          <input
-            type="checkbox"
-            value={nominee.id}
-            onChange={(e) => onVoteSubmit(e.target.checked, nominee.id)}
-          />
+          {nominee.fullName}
+          <input type="checkbox" value={nominee.id} />
         </li>
       ))}
     </ul>
