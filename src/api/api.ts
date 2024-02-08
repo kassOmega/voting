@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Request, Response } from "../model/nominee";
+import { CreateRequest, Request, Response } from "../model/nominee";
 
 export const useGetNominee = () =>
   useQuery<Response[]>({
@@ -11,7 +11,7 @@ export const useGetNominee = () =>
 
 export const useCreateNominee = () =>
   useMutation({
-    mutationFn: async (payload: Request) =>
+    mutationFn: async (payload: CreateRequest) =>
       axios
         .post("http://localhost:3000/api/nominees", payload)
         .then((res) => res.data),
