@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Button, Stack, TextField } from "@mui/material";
 import { CreateRequest } from "../model";
-
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { useCreateNominee } from "../api";
 export const VoterForm = () => {
+  const nomineeMuatate = useCreateNominee();
   const {
     register,
     handleSubmit,
@@ -21,10 +23,11 @@ export const VoterForm = () => {
     // Extract full names from data:
     const names = data.users.map((item) => item.fullName); // Get full names from objects
     // Send only the array of names to API:
-    console.log(`Submitting full names:`, names); // Now an array of strings
+    console.log(`Submitting full names:`, data.users); // Now an array of strings
 
     // Reset the form:
     // setFullNames([{ fullName: "" }]);
+    nomineeMuatate.mutateAsync(data.users);
   };
 
   const handleAddName = () => {
@@ -37,7 +40,14 @@ export const VoterForm = () => {
         <Stack width={600} spacing={2}>
           <h3>Create Nominee</h3>
           {fields.map((name, index) => (
-            <Stack key={index} mb={2} direction={"row"} gap={2}>
+            <Stack
+              key={index}
+              mb={2}
+              direction={"row"}
+              alignItems="center"
+              gap={2}
+              sx={{ position: "relative" }}
+            >
               <TextField
                 sx={{ flex: 1 }}
                 {...register(`users.${index}.fullName`, {
@@ -46,13 +56,20 @@ export const VoterForm = () => {
                 })}
               />
               <Button
-                variant="contained"
+                variant="outlined"
                 type="button"
                 onClick={() => remove(index)}
                 color="error"
-                sx={{ padding: 0.5 }}
+                sx={{
+                  padding: 0.5,
+                  margin: 1,
+                  position: "absolute",
+                  right: 0,
+                  top: "0%",
+                  border: "none",
+                }}
               >
-                Remove
+                <HighlightOffIcon />
               </Button>
             </Stack>
           ))}
