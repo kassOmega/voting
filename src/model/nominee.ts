@@ -5,8 +5,10 @@ export type Response = {
   vote: number;
 };
 export type Request = {
-  id: number;
   fullName: string;
   phoneNumber: string;
   vote: number;
+};
+export type CreateRequest = {
+  users: { fullName: string }[];
 };
