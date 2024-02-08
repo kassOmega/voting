@@ -11,7 +11,7 @@ export const useGetNominee = () =>
 
 export const useCreateNominee = () =>
   useMutation({
-    mutationFn: async (payload: CreateRequest) =>
+    mutationFn: async (payload: { fullName: string }[]) =>
       axios
         .post("http://localhost:3000/api/nominees", payload)
         .then((res) => res.data),
