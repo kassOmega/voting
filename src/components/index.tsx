@@ -1,3 +1,3 @@
 export * from "./nomineesList";
 export * from "./resultsDisplay";
-export * from "./voterForm";
+export * from "./createNominee";

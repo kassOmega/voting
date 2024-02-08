@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { NomineesList, ResultsDisplay, VoterForm } from "./components";
+import { NomineesList, ResultsDisplay, CreateNominee } from "./components";
 import { useGetNominee } from "./api";
 
 export const Main = () => {
@@ -8,7 +8,7 @@ export const Main = () => {
   return (
     <div>
       <NomineesList nominees={nominees.data ?? []} />
-      <VoterForm />
+      <CreateNominee />
       <ResultsDisplay votes={nominees.data ?? []} />
     </div>
   );

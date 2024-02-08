@@ -4,7 +4,7 @@ import { Button, Stack, TextField } from "@mui/material";
 import { CreateRequest } from "../model";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useCreateNominee } from "../api";
-export const VoterForm = () => {
+export const CreateNominee = () => {
   const nomineeMuatate = useCreateNominee();
   const {
     register,
@@ -50,6 +50,7 @@ export const VoterForm = () => {
             >
               <TextField
                 sx={{ flex: 1 }}
+                label="Full Name"
                 {...register(`users.${index}.fullName`, {
                   required: true,
                   // Add other validations as needed
