@@ -43,9 +43,7 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
                 sx={{ flex: 1 }}
                 fullWidth
                 label="Your Phone Number"
-                {...register(`vote`, {
-                  // Add other validations as needed
-                })}
+                {...register(`vote`, {})}
               />
             </Grid>
             {nominees.map((nom) => (
