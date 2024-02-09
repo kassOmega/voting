@@ -23,7 +23,6 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
 
     if (index !== -1) {
       setVotes((prevVotes) => {
-        // Update value for existing ID:
         const updatedVotes = [...prevVotes];
         updatedVotes[index].vote = newVote;
         return updatedVotes;
