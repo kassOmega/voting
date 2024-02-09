@@ -10,7 +10,7 @@ export const NomineeItem = ({
   totalVotes: number;
 }) => {
   const progress = Math.round((nominee.vote / totalVotes) * 100);
-  const color = totalVotes <= 9 ? "primary" : "secondary"; // Adjust color logic as needed
+  const color = totalVotes <= 9 ? "primary" : "secondary";
 
   return (
     <Stack width={"40%"}>
