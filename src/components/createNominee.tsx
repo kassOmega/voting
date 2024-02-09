@@ -14,24 +14,17 @@ export const CreateNominee = () => {
   } = useForm<CreateRequest>();
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: "users", // unique name for your Field Array
+      control,
+      name: "users",
     }
   );
 
   const onSubmit = (data: CreateRequest) => {
-    // Extract full names from data:
-    const names = data.users.map((item) => item.fullName); // Get full names from objects
-    // Send only the array of names to API:
-    console.log(`Submitting full names:`, data.users); // Now an array of strings
-
-    // Reset the form:
-    // setFullNames([{ fullName: "" }]);
     nomineeMuatate.mutateAsync(data.users);
   };
 
   const handleAddName = () => {
-    append({ fullName: "" }); // Add an empty object
+    append({ fullName: "" });
   };
 
   return (
@@ -53,7 +46,6 @@ export const CreateNominee = () => {
                 label="Full Name"
                 {...register(`users.${index}.fullName`, {
                   required: true,
-                  // Add other validations as needed
                 })}
               />
               <Button

@@ -1,6 +1,11 @@
 import React from "react";
 import "./App.css";
-import { NomineesList, ResultsDisplay, CreateNominee } from "./components";
+import {
+  NomineesList,
+  ResultsDisplay,
+  CreateNominee,
+  VotingForm,
+} from "./components";
 import { useGetNominee } from "./api";
 
 export const Main = () => {
@@ -10,6 +15,7 @@ export const Main = () => {
       <NomineesList nominees={nominees.data ?? []} />
       <CreateNominee />
       <ResultsDisplay votes={nominees.data ?? []} />
+      <VotingForm nominees={nominees.data ?? []} />
     </div>
   );
 };

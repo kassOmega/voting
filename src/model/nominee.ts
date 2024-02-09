@@ -12,3 +12,7 @@ export type Request = {
 export type CreateRequest = {
   users: { fullName: string }[];
 };
+export type UpdateVote = {
+  vote: number;
+  id: number;
+};
