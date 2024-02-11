@@ -1,21 +1,25 @@
 import React from "react";
 import "./App.css";
-import {
-  NomineesList,
-  ResultsDisplay,
-  CreateNominee,
-  VotingForm,
-} from "./components";
+import { NomineesList, CreateNominee, VotingForm } from "./components";
 import { useGetNominee } from "./api";
+import { Routes as Switch, Route } from "react-router-dom";
+import { AppBar } from "./components/appBar";
 
 export const Main = () => {
   const nominees = useGetNominee();
   return (
-    <div>
-      <NomineesList nominees={nominees.data ?? []} />
-      <CreateNominee />
-      <ResultsDisplay votes={nominees.data ?? []} />
-      <VotingForm nominees={nominees.data ?? []} />
-    </div>
+    <AppBar>
+      <Switch>
+        <Route
+          path="/"
+          element={<NomineesList nominees={nominees.data ?? []} />}
+        />
+        <Route path="/create" element={<CreateNominee />} />
+        <Route
+          path="/vote"
+          element={<VotingForm nominees={nominees.data ?? []} />}
+        />
+      </Switch>
+    </AppBar>
   );
 };
