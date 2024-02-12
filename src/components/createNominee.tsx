@@ -4,23 +4,20 @@ import { Button, Stack, TextField } from "@mui/material";
 import { CreateRequest } from "../model";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useCreateNominee } from "../api";
+import { useNavigate } from "react-router-dom";
 export const CreateNominee = () => {
-  const nomineeMuatate = useCreateNominee();
-  const {
-    register,
-    handleSubmit,
+  const { register, handleSubmit, control } = useForm<CreateRequest>();
+  const { fields, append, remove } = useFieldArray({
     control,
-    formState: { errors },
-  } = useForm<CreateRequest>();
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: "users",
-    }
-  );
+    name: "users",
+  });
+
+  const navigate = useNavigate();
+  const nomineeMuatate = useCreateNominee();
 
   const onSubmit = (data: CreateRequest) => {
     nomineeMuatate.mutateAsync(data.users);
+    navigate("/");
   };
 
   const handleAddName = () => {
@@ -28,7 +25,7 @@ export const CreateNominee = () => {
   };
 
   return (
-    <Stack alignItems={"center"}>
+    <Stack alignItems={"center"} padding={8}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width={600} spacing={2}>
           <h3>Create Nominee</h3>
@@ -68,14 +65,15 @@ export const CreateNominee = () => {
           ))}
           <Stack mb={2}>
             <Button variant="contained" type="button" onClick={handleAddName}>
-              Add Name
+              Add Field
             </Button>
           </Stack>
           <Stack
             sx={{ flexDirection: "row", justifyContent: "flex-end" }}
             width={"100%"}
+            paddingTop={4}
           >
-            <Button variant="contained" type="submit">
+            <Button variant="contained" type="submit" disabled={!fields.length}>
               Submit
             </Button>
           </Stack>
