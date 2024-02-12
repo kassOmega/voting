@@ -1,25 +1,22 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { CreateRequest, Request, Response, UpdateVote } from "../model/nominee";
+import { Response, UpdateVote } from "../model/nominee";
+import { Constant } from "../util/constant";
 
 export const useGetNominee = () =>
   useQuery<Response[]>({
     queryKey: ["nominee"],
-    queryFn: async () =>
-      axios.get("http://localhost:3000/api/nominees").then((res) => res.data),
+    queryFn: async () => axios.get(Constant.URL).then((res) => res.data),
+    refetchInterval: 100,
   });
 
 export const useCreateNominee = () =>
   useMutation({
     mutationFn: async (payload: { fullName: string }[]) =>
-      axios
-        .post("http://localhost:3000/api/nominees", payload)
-        .then((res) => res.data),
+      axios.post(Constant.URL, payload).then((res) => res.data),
   });
 export const useUpdateVoteNominee = () =>
   useMutation({
     mutationFn: async (payload: UpdateVote[]) =>
-      axios
-        .patch("http://localhost:3000/api/nominees/vote", payload)
-        .then((res) => res.data),
+      axios.put(Constant.URL + "/vote", payload).then((res) => res.data),
   });
