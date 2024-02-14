@@ -37,7 +37,7 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
 
       return existingVoteIndex !== -1
         ? prevVotes.filter((vote) => vote.id !== value.id) // Remove if checked
-        : [...prevVotes, { id: value.id, vote: 50, fullName: value.fullName }]; // Add with vote value 1
+        : [...prevVotes, { id: value.id, vote: 45, fullName: value.fullName }]; // Add with vote value 1
     });
   };
   const onSubmit = async () => {
@@ -54,65 +54,65 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
 
   return (
     <Stack spacing={2}>
-      {isError ? (
+      {/* {isError ? (
         <Typography alignSelf="center">API Error</Typography>
       ) : isLoading ? (
         <CircularProgress />
       ) : (
-        <>
-          <Typography variant="h2"> Voting Form</Typography>
-          <Stack
-            alignItems="center"
-            justifyContent="center"
-            spacing={2}
-            width={600}
-          >
-            <TextField
-              label="Receiver phone number"
-              {...register("phoneNumber", { maxLength: 10 })}
-            />
-          </Stack>
+        <> */}
+      <Typography variant="h2"> Voting Form</Typography>
+      <Stack
+        alignItems="center"
+        justifyContent="center"
+        spacing={2}
+        width={600}
+      >
+        <TextField
+          label="Receiver phone number"
+          {...register("phoneNumber", { maxLength: 10 })}
+        />
+      </Stack>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}></Grid>
-                {nominees.map((nom) => (
-                  <Grid item xs={6} key={nom.id}>
-                    <FormControlLabel
-                      control={<Checkbox onChange={() => handleChange(nom)} />}
-                      label={nom.fullName}
-                    />
-                  </Grid>
-                ))}
+            <Grid item xs={12}></Grid>
+            {nominees.map((nom) => (
+              <Grid item xs={6} key={nom.id}>
+                <FormControlLabel
+                  control={<Checkbox onChange={() => handleChange(nom)} />}
+                  label={nom.fullName}
+                />
               </Grid>
-              <Stack
-                sx={{ flexDirection: "row", justifyContent: "flex-end" }}
-                width={"100%"}
-              ></Stack>
-            </Grid>
-            <Grid item xs={6} height={600} alignItems="center">
-              <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={2}>
-                  {votes.map((vote) => (
-                    <Grid item xs={4} key={vote.id}>
-                      {vote.fullName}
-                    </Grid>
-                  ))}
-                </Grid>
-                <Stack alignSelf={"center"}>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    disabled={!votes.length}
-                  >
-                    Submit
-                  </Button>
-                </Stack>
-              </Stack>
-            </Grid>
+            ))}
           </Grid>
-        </>
-      )}
+          <Stack
+            sx={{ flexDirection: "row", justifyContent: "flex-end" }}
+            width={"100%"}
+          ></Stack>
+        </Grid>
+        <Grid item xs={6} height={600} alignItems="center">
+          <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
+              {votes.map((vote) => (
+                <Grid item xs={4} key={vote.id}>
+                  {vote.fullName}
+                </Grid>
+              ))}
+            </Grid>
+            <Stack alignSelf={"center"}>
+              <Button
+                variant="contained"
+                type="submit"
+                disabled={!votes.length}
+              >
+                Submit
+              </Button>
+            </Stack>
+          </Stack>
+        </Grid>
+      </Grid>
+      {/* </>
+      )} */}
     </Stack>
   );
 };
