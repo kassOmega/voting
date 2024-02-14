@@ -14,4 +14,5 @@ export type CreateRequest = {
 export type UpdateVote = {
   vote: number;
   id: number;
+  phoneNumber?: string;
 };
