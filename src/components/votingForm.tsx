@@ -1,16 +1,45 @@
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Response, UpdateVote } from "../model";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useUpdateVoteNominee } from "../api";
+import { useMemo, useState } from "react";
+import { useGetTotalPromise, useUpdateVoteNominee } from "../api";
 import { useNavigate } from "react-router-dom";
 
 export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
-  const { register, handleSubmit } = useForm<UpdateVote>();
-
-  const [votes, setVotes] = useState<UpdateVote[]>([]);
   const navigate = useNavigate();
+  const [votes, setVotes] = useState<Response[]>([]);
+
+  const { register, handleSubmit, watch } = useForm<UpdateVote>();
+  const phoneNumber = watch("phoneNumber");
+
+  const senderPhone = useMemo(() => {
+    if (phoneNumber?.length === 10) return phoneNumber;
+    return "";
+  }, [phoneNumber]);
+
+  const { data, isLoading, isError } = useGetTotalPromise(senderPhone);
   const updateVote = useUpdateVoteNominee();
+
+  const handleChange = (value: Response) => {
+    setVotes((prevVotes) => {
+      const existingVoteIndex = prevVotes.findIndex(
+        (vote) => vote.id === value.id
+      );
+
+      return existingVoteIndex !== -1
+        ? prevVotes.filter((vote) => vote.id !== value.id) // Remove if checked
+        : [...prevVotes, { id: value.id, vote: 50, fullName: value.fullName }]; // Add with vote value 1
+    });
+  };
   const onSubmit = async () => {
     console.log(votes);
     try {
@@ -20,58 +49,70 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
       console.error("Error updating votes:", error);
     }
   };
-  const handleChange = (id: number, newVote: number) => {
-    const index = votes.findIndex((vote) => vote.id === id);
 
-    if (index !== -1 && newVote > 0) {
-      setVotes((prevVotes) => {
-        const updatedVotes = [...prevVotes];
-        updatedVotes[index].vote = newVote;
-        return updatedVotes;
-      });
-    } else if (newVote > 0) {
-      return setVotes((prevVotes) => [...prevVotes, { id, vote: newVote }]);
-    }
-  };
+  console.log("sender", data);
+
   return (
-    <Stack padding={2} spacing={2}>
-      <Typography> Voting Form</Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack width={600} spacing={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                sx={{ flex: 1 }}
-                fullWidth
-                label="Your Phone Number"
-                {...register(`vote`, {})}
-              />
-            </Grid>
-            {nominees.map((nom) => (
-              <Grid item xs={6} key={nom.id}>
-                <TextField
-                  type="number"
-                  sx={{ flex: 1 }}
-                  fullWidth
-                  onChange={(event) =>
-                    handleChange(nom.id, +event?.target?.value)
-                  }
-                  defaultValue={0}
-                  label={"For " + nom.fullName}
-                />
-              </Grid>
-            ))}
-          </Grid>
+    <Stack spacing={2}>
+      {isError ? (
+        <Typography alignSelf="center">API Error</Typography>
+      ) : isLoading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h2"> Voting Form</Typography>
           <Stack
-            sx={{ flexDirection: "row", justifyContent: "flex-end" }}
-            width={"100%"}
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            width={600}
           >
-            <Button variant="contained" type="submit" disabled={!votes.length}>
-              Submit
-            </Button>
+            <TextField
+              label="Receiver phone number"
+              {...register("phoneNumber", { maxLength: 10 })}
+            />
           </Stack>
-        </Stack>
-      </form>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}></Grid>
+                {nominees.map((nom) => (
+                  <Grid item xs={6} key={nom.id}>
+                    <FormControlLabel
+                      control={<Checkbox onChange={() => handleChange(nom)} />}
+                      label={nom.fullName}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              <Stack
+                sx={{ flexDirection: "row", justifyContent: "flex-end" }}
+                width={"100%"}
+              ></Stack>
+            </Grid>
+            <Grid item xs={6} height={600} alignItems="center">
+              <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={2}>
+                  {votes.map((vote) => (
+                    <Grid item xs={4} key={vote.id}>
+                      {vote.fullName}
+                    </Grid>
+                  ))}
+                </Grid>
+                <Stack alignSelf={"center"}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={!votes.length}
+                  >
+                    Submit
+                  </Button>
+                </Stack>
+              </Stack>
+            </Grid>
+          </Grid>
+        </>
+      )}
     </Stack>
   );
 };
