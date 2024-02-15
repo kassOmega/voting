@@ -1,18 +1,18 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Response, UpdateVote } from "../model/nominee";
+import { Data, Response, UpdateVote } from "../model/nominee";
 import { Constant } from "../util/constant";
 export const useGetNominee = () =>
   useQuery<Response[]>({
     queryKey: ["nominee"],
     queryFn: async () => axios.get(Constant.URL).then((res) => res.data),
-    refetchInterval: 100,
+    refetchInterval: 5000,
   });
 export const useGetTotalPromise = (phone: string) =>
-  useQuery<any>({
-    queryKey: ["phone"],
+  useQuery<Data>({
+    queryKey: ["total-promise", phone],
     queryFn: async () =>
-      axios.get(`${Constant.ASIURL}/` + phone).then((res) => res.data),
+      axios.get(`${Constant.ASIURL}` + phone).then((res) => res.data),
   });
 export const useCreateNominee = () =>
   useMutation({
