@@ -6,7 +6,7 @@ export const useGetNominee = () =>
   useQuery<Response[]>({
     queryKey: ["nominee"],
     queryFn: async () => axios.get(Constant.URL).then((res) => res.data),
-    refetchInterval: 5000,
+    refetchInterval: 100,
   });
 export const useGetTotalPromise = (phone: string) =>
   useQuery<Data>({

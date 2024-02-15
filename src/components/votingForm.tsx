@@ -21,12 +21,12 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
   const { register, handleSubmit, watch } = useForm<UpdateVote>();
   const phoneNumber = watch("phoneNumber");
 
-  const senderPhone = useMemo(() => {
+  const voterPhone = useMemo(() => {
     if (phoneNumber?.length === 10) return phoneNumber;
     return "";
   }, [phoneNumber]);
 
-  const { data, isLoading, isError } = useGetTotalPromise(senderPhone);
+  const { data, isLoading, isError } = useGetTotalPromise(voterPhone);
   const updateVote = useUpdateVoteNominee();
 
   const handleChange = (value: Response) => {
@@ -67,14 +67,33 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
       ) : isLoading ? (
         <CircularProgress />
       ) : (
-        <Stack padding={2} spacing={2}>
+        <Stack
+          padding={2}
+          spacing={2}
+          sx={{
+            "@media (min-width: 600px)": {
+              padding: 2,
+            },
+            "@media (max-width: 600px)": {
+              paddingTop: "24px",
+            },
+          }}
+        >
           <Stack alignItems="center">
             <Typography variant="h2"> Voting Form</Typography>
             <Stack
               alignItems="center"
               justifyContent="center"
               spacing={2}
-              width={600}
+              direction="row"
+              sx={{
+                "@media (min-width: 600px)": {
+                  width: 600,
+                },
+                "@media (max-width: 600px)": {
+                  width: "300px",
+                },
+              }}
             >
               <TextField
                 label="Phone number"
@@ -82,12 +101,16 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
                 {...register("phoneNumber", { maxLength: 10 })}
               />
             </Stack>
+            <Typography>
+              {`Your Can Give ${data?.data?.promisedShare ?? 0} ${
+                data?.data?.promisedShare ?? 0 > 1 ? "Votes" : "Vote"
+              } Per Nominee`}
+            </Typography>
           </Stack>
           {data?.data && (
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}></Grid>
                   {nominees.map((nom) => (
                     <Grid item xs={6} key={nom.id}>
                       <FormControlLabel
@@ -112,11 +135,19 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
                   width={"100%"}
                 ></Stack>
               </Grid>
-              <Grid item xs={6} height={600}>
-                <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
+
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h3" padding={"8px"} flex={1}>
+                  Your Choice
+                </Typography>
+                <Stack
+                  component={"form"}
+                  onSubmit={handleSubmit(onSubmit)}
+                  spacing={4}
+                >
                   <Grid container spacing={2}>
                     {votes.map((vote) => (
-                      <Grid item xs={4} key={vote.id}>
+                      <Grid item xs={6} md={6} key={vote.id}>
                         {vote.fullName}
                       </Grid>
                     ))}
