@@ -16,3 +16,6 @@ export type UpdateVote = {
   id: number;
   phoneNumber?: string;
 };
+export type Data = {
+  data: { promisedShare: number };
+};
