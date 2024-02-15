@@ -13,10 +13,10 @@ import { useForm } from "react-hook-form";
 import { useMemo, useState } from "react";
 import { useGetTotalPromise, useUpdateVoteNominee } from "../api";
 import { useNavigate } from "react-router-dom";
-
+type Vote = Response & { checked?: true | false };
 export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
   const navigate = useNavigate();
-  const [votes, setVotes] = useState<Response[]>([]);
+  const [votes, setVotes] = useState<Vote[]>([]);
 
   const { register, handleSubmit, watch } = useForm<UpdateVote>();
   const phoneNumber = watch("phoneNumber");
@@ -37,7 +37,15 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
 
       return existingVoteIndex !== -1
         ? prevVotes.filter((vote) => vote.id !== value.id) // Remove if checked
-        : [...prevVotes, { id: value.id, vote: 45, fullName: value.fullName }]; // Add with vote value 1
+        : [
+            ...prevVotes,
+            {
+              id: value.id,
+              vote: data?.data.promisedShare ?? 0,
+              fullName: value.fullName,
+              checked: true,
+            },
+          ]; // Add with vote value 1
     });
   };
   const onSubmit = async () => {
@@ -50,69 +58,85 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
     }
   };
 
-  console.log("sender", data);
+  console.log("vote", votes);
 
   return (
     <Stack spacing={2}>
-      {/* {isError ? (
+      {isError ? (
         <Typography alignSelf="center">API Error</Typography>
       ) : isLoading ? (
         <CircularProgress />
       ) : (
-        <> */}
-      <Typography variant="h2"> Voting Form</Typography>
-      <Stack
-        alignItems="center"
-        justifyContent="center"
-        spacing={2}
-        width={600}
-      >
-        <TextField
-          label="Receiver phone number"
-          {...register("phoneNumber", { maxLength: 10 })}
-        />
-      </Stack>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}></Grid>
-            {nominees.map((nom) => (
-              <Grid item xs={6} key={nom.id}>
-                <FormControlLabel
-                  control={<Checkbox onChange={() => handleChange(nom)} />}
-                  label={nom.fullName}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Stack
-            sx={{ flexDirection: "row", justifyContent: "flex-end" }}
-            width={"100%"}
-          ></Stack>
-        </Grid>
-        <Grid item xs={6} height={600} alignItems="center">
-          <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
-              {votes.map((vote) => (
-                <Grid item xs={4} key={vote.id}>
-                  {vote.fullName}
-                </Grid>
-              ))}
-            </Grid>
-            <Stack alignSelf={"center"}>
-              <Button
-                variant="contained"
-                type="submit"
-                disabled={!votes.length}
-              >
-                Submit
-              </Button>
+        <Stack padding={2} spacing={2}>
+          <Stack alignItems="center">
+            <Typography variant="h2"> Voting Form</Typography>
+            <Stack
+              alignItems="center"
+              justifyContent="center"
+              spacing={2}
+              width={600}
+            >
+              <TextField
+                label="Phone number"
+                fullWidth
+                {...register("phoneNumber", { maxLength: 10 })}
+              />
             </Stack>
           </Stack>
-        </Grid>
-      </Grid>
-      {/* </>
-      )} */}
+          {data?.data && (
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}></Grid>
+                  {nominees.map((nom) => (
+                    <Grid item xs={6} key={nom.id}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={() => handleChange(nom)}
+                            disabled={
+                              votes.length >= 9 &&
+                              !votes.some(
+                                (vote) => vote.id === nom.id && vote.checked
+                              )
+                            }
+                          />
+                        }
+                        label={nom.fullName}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+                <Stack
+                  sx={{ flexDirection: "row", justifyContent: "flex-end" }}
+                  width={"100%"}
+                ></Stack>
+              </Grid>
+              <Grid item xs={6} height={600}>
+                <Stack component={"form"} onSubmit={handleSubmit(onSubmit)}>
+                  <Grid container spacing={2}>
+                    {votes.map((vote) => (
+                      <Grid item xs={4} key={vote.id}>
+                        {vote.fullName}
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <Stack alignSelf={"center"}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      fullWidth
+                      disabled={!votes.length}
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Grid>
+            </Grid>
+          )}
+        </Stack>
+      )}
     </Stack>
   );
 };
