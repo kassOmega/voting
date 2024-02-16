@@ -22,7 +22,9 @@ export const VotingForm = ({ nominees }: { nominees: Response[] }) => {
   const phoneNumber = watch("phoneNumber");
 
   const voterPhone = useMemo(() => {
-    if (phoneNumber?.length === 10) return phoneNumber;
+    let phone = phoneNumber?.replaceAll(" ", "");
+
+    if (phone?.length === 10) return phone;
     return "";
   }, [phoneNumber]);
 
